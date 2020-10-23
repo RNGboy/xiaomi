@@ -1,15 +1,20 @@
 <template>
   <div id="hy-swiper">
-    <div class="swiper">
-      <slot />
+    <div
+      class="swiper"
+      @touchstart="touchStart"
+      @touchmove="touchMove"
+      @touchend="touchEnd"
+    >
+      <slot></slot>
     </div>
-    <slot name="indicator"></slot>
+    <slot name="indicator"> </slot>
     <div class="indicator">
       <slot name="indicator" v-if="showIndicator && slideCount > 1">
         <div
-          v-if="(item, index) in slideCount"
+          v-for="(item, index) in slideCount"
           class="indi-item"
-          :class="{ active: idx === currentIndex - 1 }"
+          :class="{ active: index === currentIndex - 1 }"
           :key="index"
         ></div>
       </slot>
@@ -38,28 +43,28 @@ export default {
       default: true,
     },
   },
-
-  data() {
+  data: function () {
     return {
-      slideCount: 0, //元素个数
-      totalWidth: 0, //swiper的宽度
-      swiperStyle: {}, //swiper的样式
-      currentIndex: 1, //当前的index
-      scrolling: false, //是否正在滚动
+      slideCount: 0, // 元素个数
+      totalWidth: 0, // swiper的宽度
+      swiperStyle: {}, // swiper样式
+      currentIndex: 1, // 当前的index
+      scrolling: false, // 是否正在滚动
     };
   },
-  mounted() {
-    // 1.操作DOM，在前后添加Slide
+  mounted: function () {
+    // 1.操作DOM, 在前后添加Slide
     setTimeout(() => {
       this.handleDom();
 
       // 2.开启定时器
       this.startTimer();
-    }, 200);
+    }, 3000);
   },
-
   methods: {
-    // 定时器操作
+    /**
+     * 定时器操作
+     */
     startTimer() {
       this.playTimer = window.setInterval(() => {
         this.currentIndex++;
@@ -70,13 +75,15 @@ export default {
       window.clearInterval(this.playTimer);
     },
 
-    // 滚动到正确位置
+    /**
+     * 滚动到正确的位置
+     */
     scrollContent(currentPosition) {
       // 0.设置正在滚动
-      this.scrollling = true;
+      this.scrolling = true;
 
       // 1.开始滚动动画
-      this.swiperStyle.transition = "transform" + this.animDuration + "ms";
+      this.swiperStyle.transition = "transform " + this.animDuration + "ms";
       this.setTransform(currentPosition);
 
       // 2.判断滚动到的位置
@@ -86,7 +93,9 @@ export default {
       this.scrolling = false;
     },
 
-    // 校验正确的位置
+    /**
+     * 校验正确的位置
+     */
     checkPosition() {
       window.setTimeout(() => {
         // 1.校验正确的位置
@@ -104,7 +113,9 @@ export default {
       }, this.animDuration);
     },
 
-    // 设置滚动的位置
+    /**
+     * 设置滚动的位置
+     */
     setTransform(position) {
       this.swiperStyle.transform = `translate3d(${position}px, 0, 0)`;
       this.swiperStyle[
@@ -113,7 +124,9 @@ export default {
       this.swiperStyle["-ms-transform"] = `translate3d(${position}px), 0, 0`;
     },
 
-    // 操作DOM,在DOM前后添加Slide
+    /**
+     * 操作DOM, 在DOM前后添加Slide
+     */
     handleDom() {
       // 1.获取要操作的元素
       let swiperEl = document.querySelector(".swiper");
@@ -122,7 +135,7 @@ export default {
       // 2.保存个数
       this.slideCount = slidesEls.length;
 
-      // 3.如果大于1个,那么在前后分别添加一个slide
+      // 3.如果大于1个, 那么在前后分别添加一个slide
       if (this.slideCount > 1) {
         let cloneFirst = slidesEls[0].cloneNode(true);
         let cloneLast = slidesEls[this.slideCount - 1].cloneNode(true);
@@ -132,13 +145,15 @@ export default {
         this.swiperStyle = swiperEl.style;
       }
 
-      // 4.让swiper元素,显示第一个(目前是显示前面添加的最后一个元素)
+      // 4.让swiper元素, 显示第一个(目前是显示前面添加的最后一个元素)
       this.setTransform(-this.totalWidth);
     },
 
-    // 拖动事件的处理
+    /**
+     * 拖动事件的处理
+     */
     touchStart(e) {
-      // 1.如果正在滚动,不可以拖动
+      // 1.如果正在滚动, 不可以拖动
       if (this.scrolling) return;
 
       // 2.停止定时器
@@ -162,7 +177,7 @@ export default {
     touchEnd() {
       // 1.获取移动的距离
       let currentMove = Math.abs(this.distance);
-
+      
       // 2.判断最终的距离
       if (this.distance === 0) {
         return;
@@ -187,7 +202,9 @@ export default {
       this.startTimer();
     },
 
-    // 控制上一个,下一个
+    /**
+     * 控制上一个, 下一个
+     */
     previous() {
       this.changeItem(-1);
     },
@@ -216,9 +233,11 @@ export default {
   overflow: hidden;
   position: relative;
 }
-.swiper{
-    display: flex;
+
+.swiper {
+  display: flex;
 }
+
 .indicator {
   display: flex;
   justify-content: center;
@@ -226,18 +245,20 @@ export default {
   width: 100%;
   bottom: 8px;
 }
-.indi-item{
-    box-sizing: border-box;
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background-color: #fff;
-    line-height: 8px;
-    text-align: center;
-    font-size: 12px;
-    margin: 0 5px;
+
+.indi-item {
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: #fff;
+  line-height: 8px;
+  text-align: center;
+  font-size: 12px;
+  margin: 0 5px;
 }
-.indi-item.active{
-    background-color: rgba(212, 62, 11, 1.0);
+
+.indi-item.active {
+  background-color: rgba(212, 62, 46, 1);
 }
 </style>
