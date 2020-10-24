@@ -4,7 +4,7 @@
 :root {
     /* css里定义变量的方式 */
     --color-text: #666;
-    --color-hgh-text: #ff5777;
+    --color-high-text: #ff5777;
     --color-tint: #ff8198;
     --color-background: #fff;
     --font-size: 14px;

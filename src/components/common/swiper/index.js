@@ -1,9 +1,7 @@
-import Swiper from 'components/common/swiper/Swiper'
-import test from 'components/common/swiper/Swiper'
-import SwiperItem from 'components/common/swiper/SwiperItem'
+import Swiper from "./Swiper"
+import SwiperItem from './SwiperItem'
 
 export {
     Swiper,
     SwiperItem,
-    test
 }
