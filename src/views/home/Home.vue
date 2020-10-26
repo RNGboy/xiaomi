@@ -7,109 +7,22 @@
     <recommend-view :recommends="recommends" />
     <feature-view />
     <tab-control class="tab-control" :titles="titles" />
+    <goods-list :goods="goods['pop'].list"/>
+
 
     <ul>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
-      <li>列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
+      <li>商品列表</li>
     </ul>
+
   </div>
 </template>
 
@@ -119,12 +32,14 @@ import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureView";
 
-// common公共组件
+// 公共组件
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
+import GoodsList from 'components/content/goods/GoodsList'
+
 
 // 网络请求数据模块
-import { getHomeMultidata } from "network/home";
+import { getHomeMultidata, getHomeGoods } from "network/home";
 
 export default {
   name: "Home",
@@ -134,9 +49,9 @@ export default {
       recommends: [],
       titles: ["流行", "新款", "精选"],
       goods: {
-        'pop': { page: 0, list: [] },
-        'news': { page: 0, list: [] },
-        'sell': { page: 0, list: [] },
+        pop: { page: 0, list: [] },
+        new: { page: 0, list: [] },
+        sell: { page: 0, list: [] },
       },
     };
   },
@@ -146,14 +61,37 @@ export default {
     FeatureView,
     NavBar,
     TabControl,
+    GoodsList
   },
   created() {
     // 1.请求多个数据
-    getHomeMultidata().then((res) => {
-      // console.log(res)
-      this.banners = res.data.banner.list;
-      this.recommends = res.data.recommend.list;
-    });
+    this.getHomeMultidata();
+
+    // 2.请求商品数据
+    this.getHomeGoods("pop");
+    this.getHomeGoods("new");
+    this.getHomeGoods("sell");
+  },
+
+  methods: {
+    // 对getHomeMultidata方法进行再次包装
+    getHomeMultidata() {
+      getHomeMultidata().then((res) => {
+        // console.log(res)
+        this.banners = res.data.banner.list;
+        this.recommends = res.data.recommend.list;
+      });
+    },
+
+    // 对getHomeGoods方法进行再次包装
+    getHomeGoods(type) {
+      // 主要逻辑
+      const page = this.goods[type].page + 1;
+      getHomeGoods(type, page).then((res) => {
+        this.goods[type].list.push(...res.data.list);
+        this.goods[type].page += 1;
+      });
+    },
   },
 };
 </script>
