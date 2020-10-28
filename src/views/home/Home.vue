@@ -6,9 +6,8 @@
     <home-swiper :banners="banners"></home-swiper>
     <recommend-view :recommends="recommends" />
     <feature-view />
-    <tab-control class="tab-control" :titles="titles" />
-    <goods-list :goods="goods['pop'].list"/>
-
+    <tab-control class="tab-control" :titles="titles" @tabClick="tabClick" />
+    <goods-list :goods="showGoods" />
 
     <ul>
       <li>商品列表</li>
@@ -22,7 +21,6 @@
       <li>商品列表</li>
       <li>商品列表</li>
     </ul>
-
   </div>
 </template>
 
@@ -35,8 +33,7 @@ import FeatureView from "./childComps/FeatureView";
 // 公共组件
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
-import GoodsList from 'components/content/goods/GoodsList'
-
+import GoodsList from "components/content/goods/GoodsList";
 
 // 网络请求数据模块
 import { getHomeMultidata, getHomeGoods } from "network/home";
@@ -53,7 +50,15 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] },
       },
+      currentType:'pop'
+
+
     };
+  },
+  computed: {
+    showGoods(){
+      return this.goods[this.currentType].list
+    }
   },
   components: {
     HomeSwiper,
@@ -61,7 +66,7 @@ export default {
     FeatureView,
     NavBar,
     TabControl,
-    GoodsList
+    GoodsList,
   },
   created() {
     // 1.请求多个数据
@@ -74,6 +79,31 @@ export default {
   },
 
   methods: {
+    /**
+     * 事件监听相关的方法
+     */
+    tabClick(index){
+      console.log(index)
+      switch (index) {
+        case 0:
+          this.currentType="pop"
+          break;
+        case 1:
+          this.currentType='new';  
+          break;
+        case 2:
+          this.currentType='sell'
+          break
+      }
+
+    },
+
+
+
+
+    /**
+     * 网络请求相关方法
+     */
     // 对getHomeMultidata方法进行再次包装
     getHomeMultidata() {
       getHomeMultidata().then((res) => {

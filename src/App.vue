@@ -2,7 +2,7 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <router-view></router-view>
-    <main-tab-bar/>
+    <main-tab-bar class="tab-item"/>
 
   </div>
 </template>
@@ -28,4 +28,10 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 } */
+
+.tab-item{
+  position: relative;
+  z-index: 10;
+}
+
 </style>

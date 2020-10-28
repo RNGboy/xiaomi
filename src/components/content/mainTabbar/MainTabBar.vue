@@ -1,7 +1,7 @@
 <template>
   <div>
     <tab-bar>
-      <tab-bar-item path="/home">
+      <tab-bar-item class="tab-item" path="/home">
       <!-- DOM里面使用别名需要在别名前加上~符号 -->
         <img slot="item-icon" src="~assets/img/tabbar/home.svg" alt="" />
         <img
