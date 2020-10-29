@@ -1,13 +1,16 @@
 <template>
-  <div id="home">
+  <div id="home" class="wrapper">
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend-view :recommends="recommends" />
-    <feature-view />
-    <tab-control class="tab-control" :titles="titles" @tabClick="tabClick" />
-    <goods-list :goods="showGoods" />
+
+    <scroll class="content">
+      <home-swiper :banners="banners"></home-swiper>
+      <recommend-view :recommends="recommends" />
+      <feature-view />
+      <tab-control class="tab-control" :titles="titles" @tabClick="tabClick" />
+      <goods-list :goods="showGoods" />
+    </scroll>
 
     <ul>
       <li>商品列表</li>
@@ -38,6 +41,8 @@ import GoodsList from "components/content/goods/GoodsList";
 // 网络请求数据模块
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
+import Scroll from "components/common/scroll/Scroll.vue";
+
 export default {
   name: "Home",
   data() {
@@ -50,15 +55,13 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] },
       },
-      currentType:'pop'
-
-
+      currentType: "pop",
     };
   },
   computed: {
-    showGoods(){
-      return this.goods[this.currentType].list
-    }
+    showGoods() {
+      return this.goods[this.currentType].list;
+    },
   },
   components: {
     HomeSwiper,
@@ -67,6 +70,7 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
+    Scroll,
   },
   created() {
     // 1.请求多个数据
@@ -82,24 +86,20 @@ export default {
     /**
      * 事件监听相关的方法
      */
-    tabClick(index){
-      console.log(index)
+    tabClick(index) {
+      console.log(index);
       switch (index) {
         case 0:
-          this.currentType="pop"
+          this.currentType = "pop";
           break;
         case 1:
-          this.currentType='new';  
+          this.currentType = "new";
           break;
         case 2:
-          this.currentType='sell'
-          break
+          this.currentType = "sell";
+          break;
       }
-
     },
-
-
-
 
     /**
      * 网络请求相关方法
@@ -146,5 +146,10 @@ export default {
   position: sticky;
   top: 44px;
   background-color: #fff;
+}
+
+.content{
+  height: 300px;
+  overflow: hidden;
 }
 </style>

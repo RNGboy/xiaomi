@@ -1,6 +1,5 @@
 <template>
-  <div class="wrapper" ref="aaa">
-    <h3>164课时17分</h3>
+  <div class="wrapper" ref="wrapper">
     <ul class="content">
       <li>分类列表1</li>
       <li>分类列表2</li>
@@ -113,22 +112,30 @@ export default {
   name: "Category",
   data() {
     return {
-      bs: null,
+      scroll: null,
     };
   },
   mounted() {
-      console.log(this.$refs.aaa)
-    this.bs = new BScroll(this.$refs.aaa, {});
+    // better-scroll基本使用
+    this.scroll = new BScroll(this.$refs.wrapper, {
+      probeType:3,
+      pullUpLoad:true
+    });
+    this.scroll.on('scroll',()=>{
+      // console.log(position)
+    });
+    this.scroll.on('pullingUp',()=>{
+      console.log('上拉加载更多');
+    })
   },
 };
 </script>
 
 <style lang="css" scoped>
-.wrapper{
-    height: 150px;
-    background: red;
-    overflow: hidden;
-    overflow-y: scroll;
+.wrapper {
+  height: 150px;
+  background: red;
+  overflow: hidden;
+  /* overflow-y: scroll; */
 }
-
 </style>
