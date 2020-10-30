@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import BScorll from "better-scroll";
+import BScroll from "better-scroll";
 export default {
   name: "Scroll",
   data() {
@@ -18,11 +18,20 @@ export default {
   },
   mounted() {
     //   这里用ref绑定的对象,
-    this.scroll = new BScorll(this.$refs.wrapper, {});
+    this.scroll = new BScroll(this.$refs.wrapper, {
+      probeType:3,
+      pullUpLoad:true,
+    });
+    this.scroll.on('scroll',()=>{
+      // console.log(position)
+    });
+    this.scroll.on('pullingUp',()=>{
+      console.log('上拉加载更多');
+    })
   },
 };
 </script>
 
 <style lang="css" scoped>
-    
+
 </style>

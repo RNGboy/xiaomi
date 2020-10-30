@@ -128,7 +128,8 @@ export default {
 
 <style lang="css" scoped>
 #home {
-  padding-top: 44px;
+  height: 100vh;
+  position: relative;
 }
 .home-nav {
   background-color: var(--color-tint);
@@ -146,10 +147,17 @@ export default {
   position: sticky;
   top: 44px;
   background-color: #fff;
+  z-index: 9;
 }
 
 .content{
-  height: 300px;
+  left: 0;
+  right: 0;
+  top:44px;
+  bottom: 49px;
   overflow: hidden;
+  position: absolute;
 }
+
+
 </style>
