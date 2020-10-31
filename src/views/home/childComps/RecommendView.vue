@@ -36,6 +36,9 @@ export default {
     .recommend-item{
         flex: 1;
     }
+    .recommend-item a{
+      display: block;
+    }
     .recommend-item img{
         height: 70px;
         width: 70px;

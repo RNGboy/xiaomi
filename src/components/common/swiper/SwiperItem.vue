@@ -15,7 +15,11 @@ export default {
         width: 100%;
         flex-shrink: 0;
     }
+    .slide a{
+        display: block;
+    }
     .slide img{
         width: 100%;
+        vertical-align: middle;
     }
 </style>

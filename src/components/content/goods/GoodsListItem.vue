@@ -31,6 +31,7 @@ export default {
         position: relative;
 
         width: 48%;
+        height: 100%;
     }
     .goods-item img{
         width: 100%;

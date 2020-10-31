@@ -1,10 +1,14 @@
 <template>
-  <div id="home" class="wrapper">
+  <div id="home">
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-
-    <scroll class="content">
+    <scroll
+      class="content"
+      ref="scroll"
+      :probe-type="probeType"
+      @scroll="contentScroll"
+    >
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends" />
       <feature-view />
@@ -12,18 +16,10 @@
       <goods-list :goods="showGoods" />
     </scroll>
 
-    <ul>
-      <li>商品列表</li>
-      <li>商品列表</li>
-      <li>商品列表</li>
-      <li>商品列表</li>
-      <li>商品列表</li>
-      <li>商品列表</li>
-      <li>商品列表</li>
-      <li>商品列表</li>
-      <li>商品列表</li>
-      <li>商品列表</li>
-    </ul>
+    <!-- 组件监听点击（不是组件内部）需要添加native修饰符 -->
+    <back-top @click.native="backClick" v-show="isShoeBackTop" />
+
+    <div>啦啦啦</div>
   </div>
 </template>
 
@@ -37,11 +33,11 @@ import FeatureView from "./childComps/FeatureView";
 import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
+import Scroll from "components/common/scroll/Scroll.vue";
+import BackTop from "components/content/backTop/BackTop.vue";
 
 // 网络请求数据模块
 import { getHomeMultidata, getHomeGoods } from "network/home";
-
-import Scroll from "components/common/scroll/Scroll.vue";
 
 export default {
   name: "Home",
@@ -56,6 +52,8 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
+      probeType: 3,
+      isShoeBackTop: false,
     };
   },
   computed: {
@@ -71,6 +69,7 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
+    BackTop,
   },
   created() {
     // 1.请求多个数据
@@ -101,6 +100,17 @@ export default {
       }
     },
 
+    backClick() {
+      console.log("回到顶部");
+      this.$refs.scroll.scrollTo(0, 0, 1000);
+    },
+
+    // 回到顶部按钮显示方法
+    contentScroll(position) {
+      console.log(position);
+      this.isShoeBackTop = -position.y > 1000;
+    },
+
     /**
      * 网络请求相关方法
      */
@@ -129,10 +139,12 @@ export default {
 <style lang="css" scoped>
 #home {
   height: 100vh;
+  /* padding-top: 44px; */
   position: relative;
 }
 .home-nav {
   background-color: var(--color-tint);
+  font-weight: 700;
   color: #fff;
 
   position: fixed;
@@ -144,20 +156,26 @@ export default {
 
 /* css实现简单吸顶效果 */
 .tab-control {
-  position: sticky;
+  /* position: sticky; */
   top: 44px;
   background-color: #fff;
-  z-index: 9;
 }
 
-.content{
+/* 方案一 */
+.content {
+  overflow: hidden;
+
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
   left: 0;
   right: 0;
-  top:44px;
-  bottom: 49px;
-  overflow: hidden;
-  position: absolute;
 }
 
-
+/* 方案二 */
+/* .content{
+  height: calc(100% - 49px);
+  overflow: hidden;
+  margin-top: 44px;
+} */
 </style>
