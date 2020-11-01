@@ -8,6 +8,8 @@
       ref="scroll"
       :probe-type="probeType"
       @scroll="contentScroll"
+      :pull-up-load="true"
+      @pullingUp="loadMore"
     >
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends" />
@@ -16,7 +18,7 @@
       <goods-list :goods="showGoods" />
     </scroll>
 
-    <!-- 组件监听点击（不是组件内部）需要添加native修饰符 -->
+    <!-- 组件监听点击（不是组件内部，而是整个组件本身）需要添加native修饰符 -->
     <back-top @click.native="backClick" v-show="isShoeBackTop" />
 
     <div>啦啦啦</div>
@@ -53,7 +55,8 @@ export default {
       },
       currentType: "pop",
       probeType: 3,
-      isShoeBackTop: false,
+      isShoeBackTop: false, //回到顶部按钮展示判断
+      isPullUpLoad: false, //上拉加载判断
     };
   },
   computed: {
@@ -61,6 +64,7 @@ export default {
       return this.goods[this.currentType].list;
     },
   },
+
   components: {
     HomeSwiper,
     RecommendView,
@@ -79,6 +83,14 @@ export default {
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
+
+    // 3.监听item中图片加载完成
+    this.$bus.$on("itemImgLoad", () => {
+      console.log("图片加载完成");
+      this.$refs.scroll.refresh()
+    });
+
+    
   },
 
   methods: {
@@ -100,15 +112,26 @@ export default {
       }
     },
 
+    // 回到顶部按钮
     backClick() {
       console.log("回到顶部");
       this.$refs.scroll.scrollTo(0, 0, 1000);
+      console.log(this.$refs);
     },
 
-    // 回到顶部按钮显示方法
+    // 回到顶部按钮显示隐藏
     contentScroll(position) {
-      console.log(position);
+      // console.log(position);
       this.isShoeBackTop = -position.y > 1000;
+    },
+
+    // 监听上拉加载请求更多
+    loadMore() {
+      this.isPullUpLoad = true;
+      this.getHomeGoods(this.currentType);
+      this.$refs.scroll.finishPullUp();
+      this.$refs.scroll.refresh();
+      this.isPullUpLoad = false;
     },
 
     /**

@@ -11,11 +11,15 @@
 import BScroll from "better-scroll";
 export default {
   name: "Scroll",
-  props:{
-    probeType:{
-      type:Number,
-      default:1
-    }
+  props: {
+    probeType: {
+      type: Number,
+      default: 1,
+    },
+    pullUpLoad: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -23,27 +27,27 @@ export default {
     };
   },
   mounted() {
-    //   这里用ref绑定的对象,
-    // this.scroll = new BScorll(this.$refs.wrapper, {});
-    // better-scroll基本使用
+    // 创建scroll实例对象,
     this.scroll = new BScroll(this.$refs.wrapper, {
-      probeType: 3,
-      pullUpLoad: true,
+      probeType: this.probeType,
+      pullUpLoad: this.pullUpLoad,
       click: true,
     });
 
-    // 监听滚动
-    this.scroll.on("pullingUp", () => {
-      this.scroll.refresh();
-      console.log("上拉加载更多");
+    // 监听上拉加载事件
+    this.scroll.on("pullingUp",() => {
+      // 自定义上拉加载请求事件
+      this.$emit("pullingUp");
+
+      // 重新计算 BetterScroll，当 DOM 结构发生变化的时候调用确保滚动的效果正常。
+      this.refresh();
     });
 
     // 监听滚动位置
-    this.scroll.on('scroll',(position)=>{
+    this.scroll.on("scroll", (position) => {
       // 自定义scroll事件，把position发送出去
-      this.$emit('scroll',position)
-    })
-
+      this.$emit("scroll", position);
+    });
   },
 
   methods: {
@@ -51,6 +55,16 @@ export default {
     scrollTo(x, y, time = 300) {
       this.scroll.scrollTo(x, y, time);
     },
+
+    // 对finishPullUp二次封装
+    finishPullUp(){
+      this.scroll.finishPullUp()
+    },
+
+    // 对refresh二次封装
+    refresh(){
+      this.scroll.refresh()
+    }
   },
 };
 </script>
