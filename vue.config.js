@@ -1,17 +1,21 @@
 module.exports = {
     // 配置webpack的confoguer
     configureWebpack: {
-        resolve:{
+        resolve: {
             // 配置路径别名
-            alias:{
-                'assets':'@/assets',
-                'common':'@/common',
-                'network':'@/network',
-                'components':'@/components',
-                'views':'@/views'
+            alias: {
+                'assets': '@/assets',
+                'common': '@/common',
+                'network': '@/network',
+                'components': '@/components',
+                'views': '@/views'
             }
         }
+    },
+    devServer: {
+        port: 8888
     }
+
 }
 
 

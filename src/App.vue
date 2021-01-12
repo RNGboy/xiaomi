@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    <router-view></router-view>
+    <keep-alive exclude="Detail">
+      <!-- exclude="Detail"表示Detail组件不会被缓存 -->
+      <router-view/>
+    </keep-alive>
     <main-tab-bar class="tab-item"/>
 
   </div>
