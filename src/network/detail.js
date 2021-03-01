@@ -10,6 +10,15 @@ export function getDetail(iid) {
     })
 }
 
+export function getRecommend() {
+    return request({
+        url: '/recommend'
+    })
+}
+
+
+
+
 export class Goods {
     constructor(itemInfo, columns, services) {
         this.title = itemInfo.title
@@ -30,7 +39,7 @@ export class Shop {
         this.fans = shopInfo.cFans;
         this.sells = shopInfo.cSells;
         this.score = shopInfo.score;
-        this.goodsCount = shopInfo.cGoods
+        this.goodsCount = shopInfo.cGoods;
     }
 }
 

@@ -6,8 +6,14 @@
       <detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
       <detail-goods-info :detail-info="detailInfo" @imageLoad="imageLoad" />
-      <detail-params-info :item-params="itemParams"/>
+      <detail-params-info :param-info="itemParams" />
+      <detail-comment-info :comment-info="commentInfo" />
+      <goods-list :goods="recommends" />
     </scroll>
+    <!-- 底部工具栏 -->
+    <detail-bottom-bar @addCart="addToCart" />
+    <!-- 回到顶部组件 -->
+    <back-top @click.native="backTop" @></back-top>
   </div>
 </template>
 
@@ -15,11 +21,16 @@
 import DetailNavBar from "./childComps/DetailNavBar";
 import DetailSwiper from "./childComps/DetailSwiper";
 
-import { getDetail, Goods, Shop } from "network/detail";
+import { getDetail, Goods, Shop, getRecommend } from "network/detail";
+import { itemListenerMixin, backTopMixin } from "common/mixin";
+
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
 import DetailShopInfo from "./childComps/DetailShopInfo";
 import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
-import DetailParamsInfo from "./childComps/DetailParamsInfo"
+import DetailParamsInfo from "./childComps/DetailParamsInfo";
+import DetailCommentInfo from "./childComps/DetailCommentInfo.vue";
+import GoodsList from "components/content/goods/GoodsList";
+import DetailBottomBar from "./childComps/DetailBottomBar";
 
 import Scroll from "components/common/scroll/Scroll";
 
@@ -32,7 +43,10 @@ export default {
     DetailShopInfo,
     Scroll,
     DetailGoodsInfo,
-    DetailParamsInfo
+    DetailParamsInfo,
+    DetailCommentInfo,
+    GoodsList,
+    DetailBottomBar
   },
   data() {
     return {
@@ -41,16 +55,21 @@ export default {
       goods: null,
       shop: {},
       detailInfo: {}, //封装独立组件展示该变量中的数据
-      itemParams:{}
+      itemParams: {},
+      commentInfo: {},
+      recommends: [],
+      offsetTopY: [], //效果联动
+      currentIndex: 0 //效果联动
     };
   },
+  mixins: [itemListenerMixin, backTopMixin],
   created() {
     // 1.保存传入的iid
     this.iid = this.$route.params.iid;
 
     // 2.根据iid请求详情数据
     getDetail(this.iid).then(res => {
-      console.log(res);
+      // console.log(res);
       const data = res.result;
 
       // 1.获取顶部的图片轮播数据
@@ -71,13 +90,41 @@ export default {
       this.detailInfo = data.detailInfo;
 
       // 5.取出参数的信息
-      this.itemParams = data.itemParams
+      this.itemParams = data.itemParams;
+
+      // 6.取出评论信息
+      if (data.rate.cRate !== 0) {
+        this.commentInfo = data.rate.list[0];
+      }
+    });
+
+    // 3.请求推荐数据
+    getRecommend().then(res => {
+      this.recommends = res.data.list;
     });
   },
   methods: {
+    // 图片加载监听事件
     imageLoad() {
-      this.$refs.ref.scroll.refresh()
-      console.log(this.$refs)
+      this.$refs.ref.scroll.refresh();
+      // console.log(this.$refs);
+      // console.log("jianting");
+    },
+
+    // 监听添加购物车事件
+    addToCart() {
+      console.log("-----");
+      // 1.获取购物车需要展示的信息，然后添加进去
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.realPrice;
+      product.iid = this.iid;
+
+      // 2.将商品添加到购物车里。使用vuex
+      // this.$store.commit(`addCart`, product);   //此写法是基于在vuex中mutations中操作，原则上不适合
+      this.$store.dispatch('addCart',product)   //此写法是重构，vuex中在action中操作
     }
   }
 };
@@ -99,6 +146,6 @@ export default {
 .content {
   position: absolute;
   top: 44px;
-  bottom: 0px;
+  bottom: 49px;
 }
 </style>

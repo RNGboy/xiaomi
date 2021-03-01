@@ -9,7 +9,7 @@
 
 <script>
 import BScroll from "better-scroll";
-import MouseWheel from "@better-scroll/mouse-wheel";
+// import MouseWheel from "@better-scroll/mouse-wheel";
 
 export default {
   name: "Scroll",
@@ -39,7 +39,7 @@ export default {
       probeType: this.probeType | 2,
       pullUpLoad: this.pullUpLoad | true,
       click: true,
-      mouseWheel:this.mouseWheel
+      mouseWheel: this.mouseWheel
     });
 
     // 监听上拉加载事件

@@ -135,7 +135,7 @@ export default {
     backClick() {
       // console.log("回到顶部");
       this.$refs.scroll.scrollTo(0, 0, 1000);
-      console.log(this.$refs);
+      // console.log(this.$refs); 
     },
     // 监听滚动
     contentScroll(position) {
