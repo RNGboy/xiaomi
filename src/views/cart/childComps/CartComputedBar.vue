@@ -5,13 +5,14 @@
       <check-button
         :is-checked="isSelectALL"
         class="check-button"
+        @click.native="checkClick"
       ></check-button>
       <span>全选</span>
     </div>
 
     <div class="price">合计：{{ totalPrice }}</div>
 
-    <div class="calculate">去计算（{{ checkLength }}）</div>
+    <div class="calculate" @click="calcClick">去计算（{{ checkLength }}）</div>
   </div>
 </template>
 <script>
@@ -64,6 +65,27 @@ export default {
       //     }
       // }
     }
+  },
+  methods: {
+    // 购物车点击计算事件->实现全选及反选
+    checkClick() {
+      console.log("去计算");
+      if (this.isSelectALL) {
+        this.cartList.forEach(item => {
+          return (item.checked = false);
+        });
+      } else {
+        // 部分或全部不选中情况下
+        this.cartList.forEach(item => {
+          return (item.checked = true);
+        });
+      }
+    },
+    calcClick() {
+      if (!this.isSelectALL) {
+        this.$toast.show("请选择购买的商品", 2000);
+      }
+    }
   }
 };
 </script>
@@ -73,6 +95,8 @@ export default {
   left: 0;
   right: 0;
   bottom: 49px;
+  height: 40px;
+  line-height: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -98,5 +122,7 @@ export default {
 
 .calculate {
   font-size: 18px;
+  background-color: #f60;
+  color: #fff;
 }
 </style>

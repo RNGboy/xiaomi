@@ -14,6 +14,9 @@
     <detail-bottom-bar @addCart="addToCart" />
     <!-- 回到顶部组件 -->
     <back-top @click.native="backTop" @></back-top>
+
+    <!-- toast组件 -->
+    <!-- <toast :message="message" :show="show"></toast> -->
   </div>
 </template>
 
@@ -32,7 +35,13 @@ import DetailCommentInfo from "./childComps/DetailCommentInfo.vue";
 import GoodsList from "components/content/goods/GoodsList";
 import DetailBottomBar from "./childComps/DetailBottomBar";
 
+// toast组件
+// import Toast from "components/common/toast/Toast";
+
 import Scroll from "components/common/scroll/Scroll";
+
+// 映射vuex中actions的方法
+import { mapActions } from "vuex";
 
 export default {
   name: "Detail",
@@ -47,6 +56,7 @@ export default {
     DetailCommentInfo,
     GoodsList,
     DetailBottomBar
+    // Toast
   },
   data() {
     return {
@@ -60,6 +70,10 @@ export default {
       recommends: [],
       offsetTopY: [], //效果联动
       currentIndex: 0 //效果联动
+
+      // toast组件传递
+      // message: "",
+      // show: false
     };
   },
   mixins: [itemListenerMixin, backTopMixin],
@@ -104,6 +118,9 @@ export default {
     });
   },
   methods: {
+    // vuex中actions方法映射导入
+    ...mapActions(["addCart"]),
+
     // 图片加载监听事件
     imageLoad() {
       this.$refs.ref.scroll.refresh();
@@ -122,9 +139,29 @@ export default {
       product.price = this.goods.realPrice;
       product.iid = this.iid;
 
-      // 2.将商品添加到购物车里。使用vuex
+      // 2.将商品添加到购物车里。使用vuex   3.添加购物车成功  （第一种写法）
       // this.$store.commit(`addCart`, product);   //此写法是基于在vuex中mutations中操作，原则上不适合
-      this.$store.dispatch('addCart',product)   //此写法是重构，vuex中在action中操作
+      // this.$store
+      //   .dispatch("addCart", product) //此写法是重构，vuex中在action中操作
+      //   .then(res => {
+      //     console.log(res);
+      //   });
+
+      // 直接调用vuex中映射的addCart方法  （算是代码重构，本质上还是会去调用dispatch函数）
+      this.addCart(product).then(res => {
+        // 拿到东西后，展示toast组件
+        // this.show = true;
+        // this.message = res;
+        // console.log(res);
+
+        // setTimeout(() => {
+        //   this.show = false;
+        //   this.message = "";
+        // }, 1500);
+
+        // 调用插件式封装组件
+        this.$toast.show(res,2000);
+      });
     }
   }
 };

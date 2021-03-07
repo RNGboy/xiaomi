@@ -39,7 +39,7 @@ export default {
 
 <style lang="css" scoped>
 .cart-list {
-  height: 100vh;
+  height: calc(100vh - 49px - 40px);
 }
 .content {
   margin-top: 44px;

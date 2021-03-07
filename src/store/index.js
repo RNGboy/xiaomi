@@ -52,17 +52,21 @@ const store = new Vuex.Store({
 
     actions: {
         addCart(context, payload) { //此时product就是payload
-            // 查找之前数组中是否有该商品
-            let oldProduct = context.state.cartList.find(item => item.iid === payload.iid)
+            return new Promise((resolve) => {
+                // 查找之前数组中是否有该商品
+                let oldProduct = context.state.cartList.find(item => item.iid === payload.iid)
 
-            // 判断oldProduct
-            // 任务分发
-            if (oldProduct) {
-                context.commit('addCounter', oldProduct)
-            } else {
-                payload.count = 1
-                context.commit('addToCart', payload)
-            }
+                // 判断oldProduct
+                // 任务分发
+                if (oldProduct) {
+                    context.commit('addCounter', oldProduct)
+                    resolve("当前商品数量加1")
+                } else {
+                    payload.count = 1
+                    context.commit('addToCart', payload)
+                    resolve('添加新商品成功')
+                }
+            })
         }
     },
 
