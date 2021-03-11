@@ -130,7 +130,7 @@ export default {
 
     // 监听添加购物车事件
     addToCart() {
-      console.log("-----");
+      // console.log("-----");
       // 1.获取购物车需要展示的信息，然后添加进去
       const product = {};
       product.image = this.topImages[0];

@@ -69,7 +69,7 @@ export default {
   methods: {
     // 购物车点击计算事件->实现全选及反选
     checkClick() {
-      console.log("去计算");
+      // console.log("去计算");
       if (this.isSelectALL) {
         this.cartList.forEach(item => {
           return (item.checked = false);

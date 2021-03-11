@@ -37,7 +37,7 @@ export default {
   created() {
     var that = this;
     setTimeout(() => {
-      console.log(that.paramInfo);
+      // console.log(that.paramInfo);
     }, 1000);
   }
 };

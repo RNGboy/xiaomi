@@ -50,12 +50,6 @@ export default {
       return formatDate(date, "yyyy/MM/dd hh:mm:ss");
     }
   },
-  created() {
-    var that = this;
-    setTimeout(() => {
-      console.log(that.commentInfo);
-    }, 1000);
-  }
 };
 </script>
 

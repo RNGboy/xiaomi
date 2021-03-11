@@ -108,7 +108,7 @@ export default {
     });
   },
   destroyed() {
-    console.log('销毁')
+    // console.log('销毁')
   },
 
   methods: {
@@ -158,7 +158,7 @@ export default {
     swiperImageLoad() {
       // 赋值
       this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
-      console.log(this.tabOffsetTop);
+      // console.log(this.tabOffsetTop);
     },
 
     /**
